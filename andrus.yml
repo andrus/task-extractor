@@ -1,0 +1,5 @@
+taskextractor:
+  user: andrus
+  repositories:
+    - "apache/cayenne"
+    - "bootique/bootique"
