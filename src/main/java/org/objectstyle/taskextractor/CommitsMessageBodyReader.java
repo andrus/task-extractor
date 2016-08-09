@@ -65,10 +65,7 @@ public class CommitsMessageBodyReader implements MessageBodyReader<Collection<Co
     }
 
     private Commit toCommit(ProtocolCommit value) {
-
-        // TODO: init 'repo' property
-
-
+        
         Commit commit = new Commit();
 
         commit.setHash(value.sha);

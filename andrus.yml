@@ -1,5 +1,37 @@
+# export BQ_JERSEYCLIENT_AUTH_GITHUB_USERNAME=andrus
+# export BQ_JERSEYCLIENT_AUTH_GITHUB_PASSWORD=xxxxxx
+
+jerseyclient:
+  auth:
+    github:
+      type: basic
+      username: andrus
+      password: changeme
+
 taskextractor:
   user: andrus
   repositories:
     - "apache/cayenne"
     - "bootique/bootique"
+    - "bootique/bootique-bom"
+    - "bootique/bootique-cayenne"
+    - "bootique/bootique-curator"
+    - "bootique/bootique-jdbc"
+    - "bootique/bootique-jersey"
+    - "bootique/bootique-jersey-client"
+    - "bootique/bootique-jetty"
+    - "bootique/bootique-job"
+    - "bootique/bootique-jooq"
+    - "bootique/bootique-kafka-client"
+    - "bootique/bootique-linkmove"
+    - "bootique/bootique-linkrest"
+    - "bootique/bootique-liquibase"
+    - "bootique/bootique-logback"
+    - "bootique/bootique-metrics"
+    - "bootique/bootique-modules-parent"
+    - "bootique/bootique-mvc"
+    - "bootique/bootique-parent"
+    - "bootique/bootique-swagger"
+    - "bootique/bootique-tapestry"
+    - "nhl/link-rest"
+    - "nhl/link-move"

@@ -22,7 +22,7 @@ public class TaskExtractorFactory {
     }
 
     public TaskExtractor createExtractor(HttpClientFactory clientFactory) {
-        WebTarget github = clientFactory.newClient().target(BASE_URL);
+        WebTarget github = clientFactory.newAuthenticatedClient("github").target(BASE_URL);
         return new TaskExtractor(github, Objects.requireNonNull(user), repositories);
     }
 }

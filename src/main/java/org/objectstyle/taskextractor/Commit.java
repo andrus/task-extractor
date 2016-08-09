@@ -61,6 +61,10 @@ public class Commit {
 
     @Override
     public String toString() {
-        return repo + " : " + user + " " + hash + " " + time + " " + getFirstMessageLine();
+        return repo + " " + user + " " + hash + " " + time + " " + getFirstMessageLine();
+    }
+
+    public String toTabSeparated() {
+        return repo + "\t" + user + "\t" + hash + "\t" + time + "\t" + getFirstMessageLine();
     }
 }

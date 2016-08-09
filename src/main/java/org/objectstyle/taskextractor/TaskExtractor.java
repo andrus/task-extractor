@@ -38,10 +38,20 @@ public class TaskExtractor {
 
             GenericType<Collection<Commit>> type = new GenericType<Collection<Commit>>() {
             };
-            Response response = apiBase.path(uri).request().get();
+            // TODO: dynamically calc last month boundaries
+            Response response = apiBase.path(uri)
+                    .queryParam("since", "2016-07-01")
+                    .queryParam("until", "2016-08-01")
+                    .request().get();
             try {
                 Collection<Commit> singleRepoCommits = response.readEntity(type);
-                singleRepoCommits.stream().filter(filter).forEach(c -> commits.add(c));
+                singleRepoCommits.stream().filter(filter).forEach(c -> {
+
+                    // TODO: mutating object that we did not create
+
+                    c.setRepo(r);
+                    commits.add(c);
+                });
             } finally {
                 response.close();
             }
