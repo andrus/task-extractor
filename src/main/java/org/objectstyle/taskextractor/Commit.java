@@ -3,11 +3,13 @@ package org.objectstyle.taskextractor;
 import java.time.ZonedDateTime;
 
 public class Commit {
-
+    
     private ZonedDateTime time;
     private String message;
     private String hash;
     private String repo;
+
+    // TODO: track both author and committer of each commit
     private String user;
 
     public String getRepo() {
