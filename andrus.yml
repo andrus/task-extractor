@@ -35,3 +35,8 @@ taskextractor:
     - "bootique/bootique-tapestry"
     - "nhl/link-rest"
     - "nhl/link-move"
+
+log:
+  appenders:
+    - type: console
+      target: stderr

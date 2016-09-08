@@ -40,8 +40,8 @@ public class TaskExtractor {
             };
             // TODO: dynamically calc last month boundaries
             Response response = apiBase.path(uri)
-                    .queryParam("since", "2016-07-01")
-                    .queryParam("until", "2016-08-01")
+                    .queryParam("since", "2016-08-01")
+                    .queryParam("until", "2016-09-01")
                     .request().get();
             try {
                 Collection<Commit> singleRepoCommits = response.readEntity(type);
