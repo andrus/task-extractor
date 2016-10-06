@@ -15,7 +15,7 @@ public class TaskExtractorModule extends ConfigModule {
 
     @Override
     public void configure(Binder binder) {
-        BQCoreModule.contributeCommands(binder).addBinding().to(ExtractCommand.class);
+        BQCoreModule.setDefaultCommand(binder, ExtractCommand.class);
         JerseyClientModule.contributeFeatures(binder).addBinding().to(TaskExtractorFeature.class);
     }
 
