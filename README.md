@@ -5,9 +5,10 @@ tracking, etc.).
 
 ## TODO:
 
-* Add start and end dates to YAML.
+* By default automatically build the time range to cover the last month
+* Connector for local Git repos
+* Connector for Jira / Confluence
 * Report formats switch (tab-separated, comma-separated), and appropriate escaping.
 * Route logback to stderr
 * Comment analysis, tying comments to issue tracker IDs
-* Support for scanning local git repos in addition to github.
 * Support specifying report properties in YAML
