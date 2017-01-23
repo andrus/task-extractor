@@ -10,13 +10,13 @@ jerseyclient:
 
 taskextractor:
   user: andrus
-  from: 2016-11-01
-  to: 2016-12-01
+  from: 2016-12-01
+  to: 2016-12-31
   repositories:
     - "apache/cayenne"
     - "bootique/bootique"
     - "bootique/bootique-bom"
-    - "bootique/bootique-ehcache"
+    - "bootique/bootique-jcache"
     - "bootique/bootique-cayenne"
     - "bootique/bootique-curator"
     - "bootique/bootique-jdbc"
