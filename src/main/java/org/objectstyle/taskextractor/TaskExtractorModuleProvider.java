@@ -4,6 +4,7 @@ import com.google.inject.Module;
 import io.bootique.BQModule;
 import io.bootique.BQModuleProvider;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class TaskExtractorModuleProvider implements BQModuleProvider {
     }
 
     @Override
-    public Map<String, Class<?>> configs() {
+    public Map<String, Type> configs() {
         return Collections.singletonMap("taskextractor", TaskExtractorFactory.class);
     }
 }
