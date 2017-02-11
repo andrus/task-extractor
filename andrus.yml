@@ -19,6 +19,7 @@ taskextractor:
     - "bootique/bootique-jcache"
     - "bootique/bootique-cayenne"
     - "bootique/bootique-curator"
+    - "bootique/bootique-flyway"
     - "bootique/bootique-jdbc"
     - "bootique/bootique-jersey"
     - "bootique/bootique-jersey-client"
