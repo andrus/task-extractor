@@ -5,6 +5,7 @@ import com.google.inject.Binder;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import io.bootique.BQCoreModule;
+import io.bootique.Bootique;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.jackson.JacksonService;
@@ -12,6 +13,10 @@ import io.bootique.jersey.client.HttpClientFactory;
 import io.bootique.jersey.client.JerseyClientModule;
 
 public class TaskExtractorModule extends ConfigModule {
+
+    public static void main(String[] args) {
+        Bootique.app("--config=andrus.yml").args(args).autoLoadModules().run();
+    }
 
     @Override
     public void configure(Binder binder) {
