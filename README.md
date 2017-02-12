@@ -12,3 +12,4 @@ tracking, etc.).
 * Route logback to stderr
 * Comment analysis, tying comments to issue tracker IDs
 * Support specifying report properties in YAML
+* Replace tabs in text? (sometimes imports can not be loaded to Calc)
