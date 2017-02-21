@@ -20,10 +20,11 @@ public class TaskExtractorModule extends ConfigModule {
 
     @Override
     public void configure(Binder binder) {
-        BQCoreModule.setDefaultCommand(binder, ExtractCommand.class);
+        BQCoreModule.extend(binder)
+                .setDefaultCommand(ExtractCommand.class)
+                .setApplicationDescription("Extracts programming activities from various sources.")
+                .declareVar("jerseyclient.auth.github.password", "TE_GITHUB_PASSWORD");
         JerseyClientModule.contributeFeatures(binder).addBinding().to(TaskExtractorFeature.class);
-        BQCoreModule.setApplicationDescription(binder, "Extracts programming activities from various sources. " +
-                "Requires the following variables: BQ_JERSEYCLIENT_AUTH_GITHUB_PASSWORD");
     }
 
     @Singleton
