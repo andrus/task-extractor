@@ -24,7 +24,7 @@ public class TaskExtractorModule extends ConfigModule {
                 .setDefaultCommand(ExtractCommand.class)
                 .setApplicationDescription("Extracts programming activities from various sources.")
                 .declareVar("jerseyclient.auth.github.password", "TE_GITHUB_PASSWORD");
-        JerseyClientModule.contributeFeatures(binder).addBinding().to(TaskExtractorFeature.class);
+        JerseyClientModule.extend(binder).addFeature(TaskExtractorFeature.class);
     }
 
     @Singleton
