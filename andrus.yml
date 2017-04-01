@@ -9,8 +9,8 @@ jerseyclient:
 
 taskextractor:
   user: andrus
-  from: 2017-01-01
-  to: 2017-01-31
+  from: 2017-02-01
+  to: 2017-02-28
   repositories:
     - "apache/cayenne"
     - "bootique/bootique"
