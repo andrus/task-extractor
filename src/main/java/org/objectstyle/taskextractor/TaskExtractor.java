@@ -31,6 +31,8 @@ public class TaskExtractor {
         Objects.requireNonNull(from);
         Objects.requireNonNull(to);
 
+        LOGGER.info("find commits between {} and {}", from, to);
+
         Collection<Commit> commits = new ArrayList<>();
 
         Predicate<Commit> filter = user != null ? c -> user.equals(c.getUser()) : c -> true;
@@ -39,7 +41,7 @@ public class TaskExtractor {
         repositories.forEach(r -> {
             String uri = "/repos/" + r + "/commits";
 
-            LOGGER.info("read commits from repo: " + uri);
+            LOGGER.info("read commits from the repo {}",uri);
 
             GenericType<Collection<Commit>> type = new GenericType<Collection<Commit>>() {
             };
