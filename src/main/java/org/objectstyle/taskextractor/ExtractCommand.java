@@ -34,12 +34,10 @@ public class ExtractCommand extends CommandWithMetadata {
 
         String monthString = Objects.requireNonNull(cli.optionString(MONTH_OPT), "Month is not specified");
         YearMonth month = YearMonth.parse(monthString);
-
-
+        
         StringBuilder result = new StringBuilder();
         extractorProvider.get()
                 .extract(month.atDay(1), month.atEndOfMonth())
-                .stream()
                 .sorted(Comparator.comparing(Commit::getTime))
                 .forEach(c -> result.append(c.toTabSeparated()).append("\n"));
 

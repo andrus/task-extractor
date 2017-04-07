@@ -1,0 +1,2 @@
+org.objectstyle.taskextractor.repo.RepositoryTaskExtractorFactory
+org.objectstyle.taskextractor.github.GitHubExtractorFactory

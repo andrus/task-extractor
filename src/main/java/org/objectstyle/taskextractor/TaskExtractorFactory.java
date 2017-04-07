@@ -1,34 +1,35 @@
 package org.objectstyle.taskextractor;
 
+import com.google.inject.Injector;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
-import io.bootique.jersey.client.HttpClientFactory;
+import org.objectstyle.taskextractor.repo.RepositoryTaskExtractor;
+import org.objectstyle.taskextractor.repo.RepositoryTaskExtractorFactory;
 
-import javax.ws.rs.client.WebTarget;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-@BQConfig("Specifies task extraction parameters, such as code repositories, the user to look for, etc.")
+import static java.util.stream.Collectors.toList;
+
+@BQConfig("Configures task extractors.")
 public class TaskExtractorFactory {
 
-    private static final String BASE_URL = "https://api.github.com";
+    private List<RepositoryTaskExtractorFactory> extractors;
 
-    private String user;
-    private List<String> repositories;
-
-    @BQConfigProperty
-    public void setUser(String user) {
-        this.user = user;
+    public TaskExtractorFactory() {
+        this.extractors = Collections.emptyList();
     }
 
-    @BQConfigProperty
-    public void setRepositories(List<String> repositories) {
-        this.repositories = repositories;
+    @BQConfigProperty("A list of extractors for task repositories.")
+    public void setExtractors(List<RepositoryTaskExtractorFactory> extractors) {
+        this.extractors = extractors;
     }
 
-    public TaskExtractor createExtractor(HttpClientFactory clientFactory) {
-
-        WebTarget github = clientFactory.newAuthenticatedClient("github").target(BASE_URL);
-        return new TaskExtractor(github, Objects.requireNonNull(user), repositories);
+    public TaskExtractor createExtractor(Injector injector) {
+        List<RepositoryTaskExtractor> extractorList = extractors
+                .stream()
+                .map(e -> e.createExtractor(injector))
+                .collect(toList());
+        return new TaskExtractor(extractorList);
     }
 }
