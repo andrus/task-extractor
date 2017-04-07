@@ -1,5 +1,6 @@
 package org.objectstyle.taskextractor;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 public class Commit {
@@ -63,10 +64,15 @@ public class Commit {
 
     @Override
     public String toString() {
-        return repo + " " + user + " " + hash + " " + time + " " + getFirstMessageLine();
+        LocalDate date = time.toLocalDate();
+
+        return repo + " " + user + " " + hash + " " + date + " " + getFirstMessageLine();
     }
 
     public String toTabSeparated() {
-        return repo + "\t" + user + "\t" + hash + "\t" + time + "\t" + getFirstMessageLine();
+
+        LocalDate date = time.toLocalDate();
+
+        return repo + "\t" + user + "\t" + hash + "\t" + date + "\t" + getFirstMessageLine();
     }
 }
