@@ -9,8 +9,6 @@ jerseyclient:
 
 taskextractor:
   user: andrus
-  from: 2017-02-01
-  to: 2017-02-28
   repositories:
     - "apache/cayenne"
     - "bootique/bootique"
@@ -26,6 +24,7 @@ taskextractor:
     - "bootique/bootique-job"
     - "bootique/bootique-jooq"
     - "bootique/bootique-kafka-client"
+    - "bootique/bootique-kotlin"
     - "bootique/bootique-linkmove"
     - "bootique/bootique-linkrest"
     - "bootique/bootique-liquibase"
@@ -34,8 +33,11 @@ taskextractor:
     - "bootique/bootique-modules-parent"
     - "bootique/bootique-mvc"
     - "bootique/bootique-parent"
+    - "bootique/bootique-rabbitmq-client"
+    - "bootique/bootique-shiro"
     - "bootique/bootique-swagger"
     - "bootique/bootique-tapestry"
+    - "bootique/bootique-undertow"
     - "nhl/link-rest"
     - "nhl/link-move"
 

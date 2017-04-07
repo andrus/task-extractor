@@ -20,23 +20,22 @@ public class TaskExtractor {
     private String user;
     private List<String> repositories;
     private WebTarget apiBase;
-    private LocalDate from;
-    private LocalDate to;
 
-    public TaskExtractor(WebTarget apiBase, String user, List<String> repositories, LocalDate from, LocalDate to) {
+    public TaskExtractor(WebTarget apiBase, String user, List<String> repositories) {
         this.user = user;
         this.apiBase = apiBase;
         this.repositories = repositories;
-        this.from = Objects.requireNonNull(from);
-        this.to = Objects.requireNonNull(to);
     }
 
-    public Collection<Commit> extract() {
+    public Collection<Commit> extract(LocalDate from, LocalDate to) {
+        Objects.requireNonNull(from);
+        Objects.requireNonNull(to);
 
         Collection<Commit> commits = new ArrayList<>();
 
         Predicate<Commit> filter = user != null ? c -> user.equals(c.getUser()) : c -> true;
 
+        // TODO: parallel processing
         repositories.forEach(r -> {
             String uri = "/repos/" + r + "/commits";
 
@@ -65,6 +64,4 @@ public class TaskExtractor {
 
         return commits;
     }
-
-
 }
