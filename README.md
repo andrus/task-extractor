@@ -5,10 +5,9 @@ tracking, etc.).
 
 ## TODO:
 
-* Connector for local Git repos
-* Connector for Jira / Confluence
+* RepositoryTaskExtractor for local Git repos
+* RepositoryTaskExtractor for Jira / Confluence
 * Report formats switch (tab-separated, comma-separated), and appropriate escaping.
 * Comment analysis, tying comments to issue tracker IDs
-* Support specifying report properties in YAML
 * Replace tabs in text? (sometimes imports can not be loaded to Calc)
 * Parallel processing of the repos. This is pure IO, and can't be easily parallelized.
