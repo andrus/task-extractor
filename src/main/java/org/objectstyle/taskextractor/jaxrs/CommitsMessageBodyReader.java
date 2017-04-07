@@ -1,9 +1,10 @@
-package org.objectstyle.taskextractor;
+package org.objectstyle.taskextractor.jaxrs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.bootique.jackson.JacksonService;
+import org.objectstyle.taskextractor.Commit;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;

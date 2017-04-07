@@ -11,6 +11,7 @@ import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.jackson.JacksonService;
 import io.bootique.jersey.client.JerseyClientModule;
+import org.objectstyle.taskextractor.jaxrs.TaskExtractorFeature;
 
 public class TaskExtractorModule extends ConfigModule {
 

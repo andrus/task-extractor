@@ -1,4 +1,4 @@
-package org.objectstyle.taskextractor;
+package org.objectstyle.taskextractor.jaxrs;
 
 import io.bootique.jackson.JacksonService;
 
