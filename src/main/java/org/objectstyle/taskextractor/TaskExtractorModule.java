@@ -16,7 +16,7 @@ import org.objectstyle.taskextractor.jaxrs.TaskExtractorFeature;
 public class TaskExtractorModule extends ConfigModule {
 
     public static void main(String[] args) {
-        Bootique.app("--config=andrus.yml").args(args).autoLoadModules().run();
+        Bootique.app(args).autoLoadModules().exec().exit();
     }
 
     @Override
