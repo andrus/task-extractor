@@ -11,8 +11,8 @@ import io.bootique.meta.application.CommandMetadata;
 import io.bootique.meta.application.OptionMetadata;
 
 import java.time.YearMonth;
+import java.time.format.DateTimeParseException;
 import java.util.Comparator;
-import java.util.Objects;
 
 public class ExtractCommand extends CommandWithMetadata {
 
@@ -32,8 +32,18 @@ public class ExtractCommand extends CommandWithMetadata {
     @Override
     public CommandOutcome run(Cli cli) {
 
-        String monthString = Objects.requireNonNull(cli.optionString(MONTH_OPT), "Month is not specified");
-        YearMonth month = YearMonth.parse(monthString);
+        String monthString = cli.optionString(MONTH_OPT);
+
+        if (monthString == null) {
+            return CommandOutcome.failed(-1, "Month is not specified. Use -m / --month option.");
+        }
+
+        YearMonth month;
+        try {
+            month = YearMonth.parse(monthString);
+        } catch (DateTimeParseException e) {
+            return CommandOutcome.failed(-1, "Invalid month argument format: " + monthString + ". Must be YYYY-mm.");
+        }
 
         StringBuilder result = new StringBuilder();
         extractorProvider.get()
