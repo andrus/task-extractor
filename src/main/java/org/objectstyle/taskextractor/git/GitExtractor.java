@@ -50,6 +50,8 @@ public class GitExtractor implements RepositoryTaskExtractor {
                 .map(GitExtractor::repository)
                 .forEach(r -> {
 
+                            fetch(r);
+
                             String repoName = r.getRepository().getDirectory().getParentFile().getName();
 
                             for (RevCommit rc : masterCommits(r)) {
@@ -77,6 +79,18 @@ public class GitExtractor implements RepositoryTaskExtractor {
                 );
 
         return commits;
+    }
+
+    private void fetch(Git repo) {
+        if (fetch) {
+
+            LOGGER.info("fetch {}", repo.getRepository().getDirectory().getParentFile().getName());
+            try {
+                repo.fetch().setRemote("origin").call();
+            } catch (GitAPIException e) {
+                throw new RuntimeException("Error fetching repo", e);
+            }
+        }
     }
 
     private Commit toCommit(String repoName, RevCommit revCommit, ZonedDateTime revCommitTime) {
