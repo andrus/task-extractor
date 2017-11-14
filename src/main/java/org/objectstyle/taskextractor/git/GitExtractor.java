@@ -107,8 +107,7 @@ public class GitExtractor implements RepositoryTaskExtractor {
         try {
             return repository
                     .log()
-                    // TODO: other branches?
-                    .add(repository.getRepository().resolve("origin/master"))
+                    .all()
                     .call();
         } catch (GitAPIException | IOException e) {
             throw new RuntimeException("Error listing repo revisions", e);
