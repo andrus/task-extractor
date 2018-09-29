@@ -33,7 +33,7 @@ public class GitHubExtractorFactory implements RepositoryTaskExtractorFactory {
 
     @Override
     public RepositoryTaskExtractor createExtractor(Injector injector) {
-        WebTarget github = injector.getInstance(HttpClientFactory.class).newAuthenticatedClient("github").target(BASE_URL);
+        WebTarget github = injector.getInstance(HttpClientFactory.class).newBuilder().auth("github").build().target(BASE_URL);
         return new GithubExtractor(github, Objects.requireNonNull(user), repositories);
     }
 }
