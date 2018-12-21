@@ -54,7 +54,7 @@ public class GitExtractor implements RepositoryTaskExtractor {
 
                             String repoName = r.getRepository().getDirectory().getParentFile().getName();
 
-                            for (RevCommit rc : masterCommits(r)) {
+                            for (RevCommit rc : allCommits(r)) {
                                 Instant i = Instant.ofEpochSecond(rc.getCommitTime());
                                 ZonedDateTime rcTime = ZonedDateTime.ofInstant(i, ZoneOffset.UTC);
 
@@ -103,7 +103,7 @@ public class GitExtractor implements RepositoryTaskExtractor {
         return commit;
     }
 
-    private Iterable<RevCommit> masterCommits(Git repository) {
+    private Iterable<RevCommit> allCommits(Git repository) {
         try {
             return repository
                     .log()
