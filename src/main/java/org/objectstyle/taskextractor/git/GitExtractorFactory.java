@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -27,7 +28,7 @@ public class GitExtractorFactory implements RepositoryTaskExtractorFactory {
     @Override
     public RepositoryTaskExtractor createExtractor(Injector injector) {
 
-        List<File> validRepos = repositories.stream()
+        List<File> validRepos = getRepositories().stream()
                 .filter(GitExtractorFactory::validRepoDirectory)
                 .map(f -> new File(f, ".git"))
                 .filter(GitExtractorFactory::validRepoDirectory)
@@ -49,6 +50,10 @@ public class GitExtractorFactory implements RepositoryTaskExtractorFactory {
     @BQConfigProperty
     public void setUser(String user) {
         this.user = user;
+    }
+
+    private List<File> getRepositories() {
+        return repositories != null ? repositories : Collections.emptyList();
     }
 
     private static boolean validRepoDirectory(File file) {
