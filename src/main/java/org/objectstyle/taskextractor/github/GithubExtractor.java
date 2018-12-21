@@ -48,21 +48,26 @@ public class GithubExtractor implements RepositoryTaskExtractor {
             GenericType<Collection<Commit>> type = new GenericType<Collection<Commit>>() {
             };
 
-            Response response = apiBase.path(uri)
+            try (Response response = apiBase.path(uri)
                     .queryParam("since", from)
                     .queryParam("until", to)
-                    .request().get();
-            try {
-                Collection<Commit> singleRepoCommits = response.readEntity(type);
-                singleRepoCommits.stream().filter(filter).forEach(c -> {
+                    .request()
+                    .get()) {
 
-                    // TODO: mutating object that we did not create
+                if (response.getStatus() == 200) {
 
-                    c.setRepo(r);
-                    commits.add(c);
-                });
-            } finally {
-                response.close();
+                    Collection<Commit> singleRepoCommits = response.readEntity(type);
+                    singleRepoCommits.stream().filter(filter).forEach(c -> {
+
+                        // TODO: mutating object that we did not create
+
+                        c.setRepo(r);
+                        commits.add(c);
+                    });
+                }
+                else {
+                    throw new IllegalStateException("Bad response from Github: " + response.getStatus());
+                }
             }
         });
 
