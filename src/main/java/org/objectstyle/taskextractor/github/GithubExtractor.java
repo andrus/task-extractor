@@ -6,14 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 public class GithubExtractor implements RepositoryTaskExtractor {
 
@@ -35,42 +31,6 @@ public class GithubExtractor implements RepositoryTaskExtractor {
 
         LOGGER.info("find commits between {} and {}", from, to);
 
-        Collection<Commit> commits = new ArrayList<>();
-
-        Predicate<Commit> filter = user != null ? c -> user.equals(c.getUser()) : c -> true;
-
-        // TODO: parallel extraction...
-        repositories.forEach(r -> {
-            String uri = "/repos/" + r + "/commits";
-
-            LOGGER.info("read commits from the repo {}", uri);
-
-            GenericType<Collection<Commit>> type = new GenericType<Collection<Commit>>() {
-            };
-
-            try (Response response = apiBase.path(uri)
-                    .queryParam("since", from)
-                    .queryParam("until", to)
-                    .request()
-                    .get()) {
-
-                if (response.getStatus() == 200) {
-
-                    Collection<Commit> singleRepoCommits = response.readEntity(type);
-                    singleRepoCommits.stream().filter(filter).forEach(c -> {
-
-                        // TODO: mutating object that we did not create
-
-                        c.setRepo(r);
-                        commits.add(c);
-                    });
-                }
-                else {
-                    throw new IllegalStateException("Bad response from Github: " + response.getStatus());
-                }
-            }
-        });
-
-        return commits;
+        return new GithubExtractorWorker(user, repositories, apiBase, from, to).extractCommits();
     }
 }
