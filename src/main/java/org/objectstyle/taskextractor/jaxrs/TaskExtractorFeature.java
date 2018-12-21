@@ -1,5 +1,8 @@
 package org.objectstyle.taskextractor.jaxrs;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.bootique.jackson.JacksonService;
 
 import javax.ws.rs.core.Feature;
@@ -15,7 +18,15 @@ public class TaskExtractorFeature implements Feature {
 
     @Override
     public boolean configure(FeatureContext context) {
-        context.register(new CommitsMessageBodyReader(jacksonService));
+
+        ObjectMapper mapper = jacksonService
+                .newObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        context.register(new CommitsMessageBodyReader(mapper))
+                .register(new BranchesMessageBodyReader(mapper));
+
         return true;
     }
 }

@@ -1,9 +1,7 @@
 package org.objectstyle.taskextractor.jaxrs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.bootique.jackson.JacksonService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.objectstyle.taskextractor.Commit;
 
 import javax.ws.rs.WebApplicationException;
@@ -23,10 +21,10 @@ import java.util.Collection;
 @Provider
 public class CommitsMessageBodyReader implements MessageBodyReader<Collection<Commit>> {
 
-    private JacksonService jacksonService;
+    private ObjectMapper mapper;
 
-    public CommitsMessageBodyReader(JacksonService jacksonService) {
-        this.jacksonService = jacksonService;
+    public CommitsMessageBodyReader(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 
     @Override
@@ -54,11 +52,7 @@ public class CommitsMessageBodyReader implements MessageBodyReader<Collection<Co
         TypeReference<Collection<ProtocolCommit>> ref = new TypeReference<Collection<ProtocolCommit>>() {
         };
 
-        Collection<ProtocolCommit> values = jacksonService
-                .newObjectMapper()
-                .registerModule(new JavaTimeModule())
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .readValue(entityStream, ref);
+        Collection<ProtocolCommit> values = mapper.readValue(entityStream, ref);
 
         Collection<Commit> commits = new ArrayList<>(values.size());
         values.forEach(v -> commits.add(toCommit(v)));
@@ -66,7 +60,7 @@ public class CommitsMessageBodyReader implements MessageBodyReader<Collection<Co
     }
 
     private Commit toCommit(ProtocolCommit value) {
-        
+
         Commit commit = new Commit();
 
         commit.setHash(value.sha);
