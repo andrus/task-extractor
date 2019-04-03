@@ -50,12 +50,7 @@ public class ExtractCommand extends CommandWithMetadata {
         DataFrame df = extractorProvider.get()
                 .extract(month.atDay(1), month.atEndOfMonth())
                 .convertColumn(Commit.MESSAGE.ordinal(), Commit.trimMessage())
-                .sort(Commit.TIME.ordinal(), true)
-                .selectColumns(Commit.TIME.ordinal(),
-                        Commit.REPO.ordinal(),
-                        Commit.MESSAGE.ordinal(),
-                        Commit.USER.ordinal(),
-                        Commit.HASH.ordinal());
+                .sort(Commit.TIME.ordinal(), true);
 
         StringWriter csv = new StringWriter();
         Csv.saver().save(df, csv);

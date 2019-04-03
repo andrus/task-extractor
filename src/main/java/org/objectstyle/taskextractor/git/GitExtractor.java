@@ -56,7 +56,7 @@ public class GitExtractor implements RepositoryTaskExtractor {
     private static Object[] toCommit(String repoName, RevCommit rc) {
         Instant i = Instant.ofEpochSecond(rc.getCommitTime());
         ZonedDateTime rcTime = ZonedDateTime.ofInstant(i, ZoneOffset.UTC);
-        return DataFrame.row(rcTime, rc.getShortMessage(), rc.getName(), repoName, rc.getAuthorIdent().getName());
+        return DataFrame.row(rcTime, repoName, rc.getShortMessage(), rc.getAuthorIdent().getName(), rc.getName());
     }
 
     private static Iterable<RevCommit> allCommits(Git repository) {

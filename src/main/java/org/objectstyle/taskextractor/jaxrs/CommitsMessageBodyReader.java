@@ -33,10 +33,11 @@ public class CommitsMessageBodyReader implements MessageBodyReader<DataFrame> {
 
         return DataFrame.row(
                 time,
-                message,
-                pc.sha,
                 null,
-                author);
+                message,
+                author,
+                pc.sha
+        );
     }
 
     @Override

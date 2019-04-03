@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public enum Commit {
 
-    TIME, MESSAGE, HASH, REPO, USER;
+    TIME, REPO, MESSAGE, USER, HASH;
 
     public static Index index() {
         return Index.forLabels(Commit.class);
