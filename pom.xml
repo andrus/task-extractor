@@ -18,7 +18,7 @@
 
     <properties>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
-        <dflib-version>1.0-SNAPSHOT</dflib-version>
+        <dflib-version>0.5-SNAPSHOT</dflib-version>
     </properties>
 
     <repositories>
