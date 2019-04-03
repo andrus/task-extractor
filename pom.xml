@@ -18,9 +18,33 @@
 
     <properties>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
-
         <dflib-version>1.0-SNAPSHOT</dflib-version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>linkmove-snapshots</id>
+            <url>http://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+        <!-- Main artifact repo -->
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -43,12 +67,9 @@
             </dependency>
             <dependency>
                 <groupId>com.nhl.dflib</groupId>
-                <artifactId>dflib</artifactId>
-                <version>${dflib-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.nhl.dflib</groupId>
-                <artifactId>dflib-csv</artifactId>
+                <artifactId>dflib-bom</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
                 <version>${dflib-version}</version>
             </dependency>
         </dependencies>
@@ -58,10 +79,12 @@
         <dependency>
             <groupId>io.bootique.jersey.client</groupId>
             <artifactId>bootique-jersey-client-instrumented</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.bootique.logback</groupId>
             <artifactId>bootique-logback</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
