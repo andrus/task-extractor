@@ -2,6 +2,7 @@ package org.objectstyle.taskextractor.jaxrs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhl.dflib.DataFrame;
 import org.objectstyle.taskextractor.Commit;
 
 import javax.ws.rs.WebApplicationException;
@@ -12,14 +13,12 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Provider
-public class CommitsMessageBodyReader implements MessageBodyReader<Collection<Commit>> {
+public class CommitsMessageBodyReader implements MessageBodyReader<DataFrame> {
 
     private ObjectMapper mapper;
 
@@ -27,57 +26,40 @@ public class CommitsMessageBodyReader implements MessageBodyReader<Collection<Co
         this.mapper = mapper;
     }
 
-    @Override
-    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        if (!Collection.class.isAssignableFrom(type)) {
-            return false;
-        }
+    private static Object[] toCommit(ProtocolCommit pc) {
+        String author = pc.author != null ? pc.author.login : null;
+        String message = pc.commit != null ? pc.commit.message : null;
+        ZonedDateTime time = pc.commit != null && pc.commit.author != null ? pc.commit.author.date : null;
 
-        if (!(genericType instanceof ParameterizedType)) {
-            return false;
-        }
-
-        Type[] params = ((ParameterizedType) genericType).getActualTypeArguments();
-        return params != null && params.length == 1 && Commit.class.equals(params[0]);
+        return DataFrame.row(
+                time,
+                message,
+                pc.sha,
+                null,
+                author);
     }
 
     @Override
-    public Collection<Commit> readFrom(Class<Collection<Commit>> type,
-                                       Type genericType,
-                                       Annotation[] annotations,
-                                       MediaType mediaType,
-                                       MultivaluedMap<String, String> httpHeaders,
-                                       InputStream entityStream) throws IOException, WebApplicationException {
+    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+        return DataFrame.class.isAssignableFrom(type);
+    }
+
+    @Override
+    public DataFrame readFrom(
+            Class<DataFrame> type,
+            Type genericType,
+            Annotation[] annotations,
+            MediaType mediaType,
+            MultivaluedMap<String, String> httpHeaders,
+            InputStream entityStream) throws IOException, WebApplicationException {
 
         TypeReference<Collection<ProtocolCommit>> ref = new TypeReference<Collection<ProtocolCommit>>() {
         };
 
-        Collection<ProtocolCommit> values = mapper.readValue(entityStream, ref);
-
-        Collection<Commit> commits = new ArrayList<>(values.size());
-        values.forEach(v -> commits.add(toCommit(v)));
-        return commits;
-    }
-
-    private Commit toCommit(ProtocolCommit value) {
-
-        Commit commit = new Commit();
-
-        commit.setHash(value.sha);
-
-        if (value.author != null) {
-            commit.setUser(value.author.login);
-        }
-
-        if (value.commit != null) {
-            commit.setMessage(value.commit.message);
-
-            if (value.commit.author != null) {
-                commit.setTime(value.commit.author.date);
-            }
-        }
-
-        return commit;
+        return DataFrame.forObjects(
+                Commit.index(),
+                mapper.readValue(entityStream, ref),
+                CommitsMessageBodyReader::toCommit);
     }
 
     static class ProtocolCommit {

@@ -1,10 +1,10 @@
 package org.objectstyle.taskextractor;
 
+import com.nhl.dflib.DataFrame;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractor;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.stream.Stream;
 
 public class TaskExtractor {
 
@@ -14,7 +14,7 @@ public class TaskExtractor {
         this.extractors = extractors;
     }
 
-    public Stream<Commit> extract(LocalDate from, LocalDate to) {
-        return extractors.stream().map(e -> e.extract(from, to)).flatMap(Collection::stream);
+    public DataFrame extract(LocalDate from, LocalDate to) {
+        return extractors.stream().map(e -> e.extract(from, to)).reduce((df1, df2) -> df1.vConcat(df2)).get();
     }
 }

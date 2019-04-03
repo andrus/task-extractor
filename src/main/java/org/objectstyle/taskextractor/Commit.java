@@ -1,78 +1,33 @@
 package org.objectstyle.taskextractor;
 
+import com.nhl.dflib.Index;
+import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.map.ValueMapper;
+
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
-public class Commit {
-    
-    private ZonedDateTime time;
-    private String message;
-    private String hash;
-    private String repo;
+public enum Commit {
 
-    // TODO: track both author and committer of each commit
-    private String user;
+    TIME, MESSAGE, HASH, REPO, USER;
 
-    public String getRepo() {
-        return repo;
+    public static Index index() {
+        return Index.forLabels(Commit.class);
     }
 
-    public void setRepo(String repo) {
-        this.repo = repo;
+    public static ValuePredicate<ZonedDateTime> timeBetween(LocalDate from, LocalDate to) {
+        ZonedDateTime fromDT = Objects.requireNonNull(from).atStartOfDay(ZoneOffset.UTC);
+        ZonedDateTime toDT = Objects.requireNonNull(to).plusDays(1).atStartOfDay(ZoneOffset.UTC);
+        return (ZonedDateTime t) -> !(t.isBefore(fromDT) || t.isAfter(toDT));
     }
 
-    public ZonedDateTime getTime() {
-        return time;
+    public static ValuePredicate<String> userMatches(String user) {
+        return (String u) -> Objects.equals(u, user);
     }
 
-    public void setTime(ZonedDateTime time) {
-        this.time = time;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getFirstMessageLine() {
-        if (message == null) {
-            return null;
-        }
-
-        // TODO: not particularly efficient
-        return message.split("\\r?\\n")[0].trim();
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    @Override
-    public String toString() {
-        LocalDate date = time.toLocalDate();
-
-        return repo + " " + user + " " + hash + " " + date + " " + getFirstMessageLine();
-    }
-
-    public String toTabSeparated() {
-
-        LocalDate date = time.toLocalDate();
-
-        return repo + "\t" + user + "\t" + hash + "\t" + date + "\t" + getFirstMessageLine();
+    public static ValueMapper<String, String> trimMessage() {
+        return m -> m != null ? m.split("\\r?\\n")[0].trim() : null;
     }
 }

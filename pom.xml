@@ -18,6 +18,8 @@
 
     <properties>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
+
+        <dflib-version>1.0-SNAPSHOT</dflib-version>
     </properties>
 
     <dependencyManagement>
@@ -39,6 +41,16 @@
                 <artifactId>org.eclipse.jgit</artifactId>
                 <version>4.7.0.201704051617-r</version>
             </dependency>
+            <dependency>
+                <groupId>com.nhl.dflib</groupId>
+                <artifactId>dflib</artifactId>
+                <version>${dflib-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nhl.dflib</groupId>
+                <artifactId>dflib-csv</artifactId>
+                <version>${dflib-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -59,6 +71,16 @@
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nhl.dflib</groupId>
+            <artifactId>dflib</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nhl.dflib</groupId>
+            <artifactId>dflib-csv</artifactId>
             <scope>compile</scope>
         </dependency>
     </dependencies>

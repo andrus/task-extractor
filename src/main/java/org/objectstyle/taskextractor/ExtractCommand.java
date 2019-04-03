@@ -3,6 +3,8 @@ package org.objectstyle.taskextractor;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.csv.Csv;
 import io.bootique.cli.Cli;
 import io.bootique.command.CommandOutcome;
 import io.bootique.command.CommandWithMetadata;
@@ -10,9 +12,9 @@ import io.bootique.log.BootLogger;
 import io.bootique.meta.application.CommandMetadata;
 import io.bootique.meta.application.OptionMetadata;
 
+import java.io.StringWriter;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
-import java.util.Comparator;
 
 public class ExtractCommand extends CommandWithMetadata {
 
@@ -45,13 +47,20 @@ public class ExtractCommand extends CommandWithMetadata {
             return CommandOutcome.failed(-1, "Invalid month argument format: " + monthString + ". Must be YYYY-mm.");
         }
 
-        StringBuilder result = new StringBuilder();
-        extractorProvider.get()
+        DataFrame df = extractorProvider.get()
                 .extract(month.atDay(1), month.atEndOfMonth())
-                .sorted(Comparator.comparing(Commit::getTime))
-                .forEach(c -> result.append(c.toTabSeparated()).append("\n"));
+                .convertColumn(Commit.MESSAGE.ordinal(), Commit.trimMessage())
+                .sort(Commit.TIME.ordinal(), true)
+                .selectColumns(Commit.TIME.ordinal(),
+                        Commit.REPO.ordinal(),
+                        Commit.MESSAGE.ordinal(),
+                        Commit.USER.ordinal(),
+                        Commit.HASH.ordinal());
 
-        logger.stdout(result.toString());
+        StringWriter csv = new StringWriter();
+        Csv.saver().save(df, csv);
+        logger.stdout(csv.toString());
+
         return CommandOutcome.succeeded();
     }
 }

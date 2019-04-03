@@ -1,13 +1,12 @@
 package org.objectstyle.taskextractor.github;
 
-import org.objectstyle.taskextractor.Commit;
+import com.nhl.dflib.DataFrame;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.WebTarget;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +24,8 @@ public class GithubExtractor implements RepositoryTaskExtractor {
         this.repositories = repositories;
     }
 
-    public Collection<Commit> extract(LocalDate from, LocalDate to) {
+    @Override
+    public DataFrame extract(LocalDate from, LocalDate to) {
         Objects.requireNonNull(from);
         Objects.requireNonNull(to);
 
