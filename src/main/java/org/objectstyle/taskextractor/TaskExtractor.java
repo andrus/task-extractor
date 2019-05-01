@@ -15,6 +15,6 @@ public class TaskExtractor {
     }
 
     public DataFrame extract(LocalDate from, LocalDate to) {
-        return extractors.stream().map(e -> e.extract(from, to)).reduce((df1, df2) -> df1.vConcat(df2)).get();
+        return extractors.stream().map(e -> e.extract(from, to)).reduce(DataFrame::vConcat).get();
     }
 }
