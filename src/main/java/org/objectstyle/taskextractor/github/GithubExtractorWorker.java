@@ -1,7 +1,7 @@
 package org.objectstyle.taskextractor.github;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.ValuePredicate;
 import org.objectstyle.taskextractor.Branch;
 import org.objectstyle.taskextractor.Commit;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ class GithubExtractorWorker {
                 .map(this::extractRepoCommits)
                 // TODO: replace "reduce" with Collector that can batch-concat multiple frames
                 .reduce(DataFrame::vConcat)
-                .orElseGet(() -> DataFrame.forRows(Commit.index()));
+                .orElseGet(() -> DataFrame.newFrame(Commit.index()).empty());
     }
 
     private DataFrame extractRepoCommits(String repository) {
@@ -57,7 +57,7 @@ class GithubExtractorWorker {
                 .stream()
                 .map(b -> extractBranchCommits(repository, b))
                 .reduce(DataFrame::vConcat)
-                .orElseGet(() -> DataFrame.forRows(Commit.index()))
+                .orElseGet(() -> DataFrame.newFrame(Commit.index()).empty())
                 // dedupe matching commits from multiple branches
                 .group(Commit.HASH.ordinal()).head(1)
                 .toDataFrame();
@@ -79,7 +79,7 @@ class GithubExtractorWorker {
             if (response.getStatus() == 200) {
                 return response
                         .readEntity(DataFrame.class)
-                        .filter(Commit.USER.ordinal(), userMatches)
+                        .filterRows(Commit.USER.ordinal(), userMatches)
                         .convertColumn(Commit.REPO.ordinal(), v -> repository);
 
             } else {

@@ -1,8 +1,8 @@
 package org.objectstyle.taskextractor;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.filter.ValuePredicate;
-import com.nhl.dflib.map.ValueMapper;
+import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;

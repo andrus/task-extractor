@@ -1,7 +1,7 @@
 package org.objectstyle.taskextractor.git;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.filter.RowPredicate;
+import com.nhl.dflib.RowPredicate;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
@@ -47,16 +47,15 @@ public class GitExtractor implements RepositoryTaskExtractor {
     }
 
     public static DataFrame collectCommits(String repoName, Iterable<RevCommit> commits) {
-        return DataFrame.forObjects(
-                Commit.index(),
-                commits,
-                rc -> GitExtractor.toCommit(repoName, rc));
+        return DataFrame
+                .newFrame(Commit.index())
+                .objectsToRows(commits, rc -> GitExtractor.toCommit(repoName, rc));
     }
 
     private static Object[] toCommit(String repoName, RevCommit rc) {
         Instant i = Instant.ofEpochSecond(rc.getCommitTime());
         ZonedDateTime rcTime = ZonedDateTime.ofInstant(i, ZoneOffset.UTC);
-        return DataFrame.row(rcTime, repoName, rc.getShortMessage(), rc.getAuthorIdent().getName(), rc.getName());
+        return new Object[]{rcTime, repoName, rc.getShortMessage(), rc.getAuthorIdent().getName(), rc.getName()};
     }
 
     private static Iterable<RevCommit> allCommits(Git repository) {
@@ -87,13 +86,13 @@ public class GitExtractor implements RepositoryTaskExtractor {
                 .map(r -> readRepo(r, prefilter))
                 // TODO: replace "reduce" with Collector that can batch-concat multiple frames
                 .reduce(DataFrame::vConcat)
-                .orElseGet(() -> DataFrame.forRows(Commit.index()));
+                .orElseGet(() -> DataFrame.newFrame(Commit.index()).empty());
     }
 
     private DataFrame readRepo(Git r, RowPredicate prefilter) {
         fetch(r);
         String repoName = r.getRepository().getDirectory().getParentFile().getName();
-        return collectCommits(repoName, allCommits(r)).filter(prefilter);
+        return collectCommits(repoName, allCommits(r)).filterRows(prefilter);
     }
 
     private void fetch(Git repo) {

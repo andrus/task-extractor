@@ -31,13 +31,13 @@ public class CommitsMessageBodyReader implements MessageBodyReader<DataFrame> {
         String message = pc.commit != null ? pc.commit.message : null;
         ZonedDateTime time = pc.commit != null && pc.commit.author != null ? pc.commit.author.date : null;
 
-        return DataFrame.row(
+        return new Object[]{
                 time,
                 null,
                 message,
                 author,
                 pc.sha
-        );
+        };
     }
 
     @Override
@@ -57,10 +57,8 @@ public class CommitsMessageBodyReader implements MessageBodyReader<DataFrame> {
         TypeReference<Collection<ProtocolCommit>> ref = new TypeReference<Collection<ProtocolCommit>>() {
         };
 
-        return DataFrame.forObjects(
-                Commit.index(),
-                mapper.readValue(entityStream, ref),
-                CommitsMessageBodyReader::toCommit);
+        return DataFrame.newFrame(Commit.index())
+                .objectsToRows(mapper.readValue(entityStream, ref), CommitsMessageBodyReader::toCommit);
     }
 
     static class ProtocolCommit {
