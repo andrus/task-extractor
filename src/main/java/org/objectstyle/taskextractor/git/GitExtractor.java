@@ -1,7 +1,9 @@
 package org.objectstyle.taskextractor.git;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.JoinType;
 import com.nhl.dflib.RowPredicate;
+import com.nhl.dflib.concat.VConcat;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
@@ -80,13 +82,13 @@ public class GitExtractor implements RepositoryTaskExtractor {
 
 
         // TODO: parallel extraction... just change to parallel stream
-        return repositories.stream()
+        DataFrame[] perRepoCommits = repositories.stream()
                 .peek(d -> LOGGER.info("read commits from the local repo {}", d))
                 .map(GitExtractor::repository)
                 .map(r -> readRepo(r, prefilter))
-                // TODO: replace "reduce" with Collector that can batch-concat multiple frames
-                .reduce(DataFrame::vConcat)
-                .orElseGet(() -> DataFrame.newFrame(Commit.index()).empty());
+                .toArray(i -> new DataFrame[i]);
+
+        return VConcat.concat(JoinType.left, perRepoCommits);
     }
 
     private DataFrame readRepo(Git r, RowPredicate prefilter) {
