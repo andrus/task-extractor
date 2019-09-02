@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.bootique.parent</groupId>
         <artifactId>bootique-parent</artifactId>
-        <version>0.12</version>
+        <version>0.14</version>
     </parent>
 
     <groupId>org.objectstyle.taskextractor</groupId>
@@ -18,12 +18,12 @@
 
     <properties>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
-        <dflib-version>0.6-SNAPSHOT</dflib-version>
+        <dflib-version>0.7-SNAPSHOT</dflib-version>
     </properties>
 
     <repositories>
         <repository>
-            <id>linkmove-snapshots</id>
+            <id>snapshots</id>
             <url>http://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
             <releases>
                 <enabled>false</enabled>
@@ -51,14 +51,14 @@
             <dependency>
                 <groupId>io.bootique.bom</groupId>
                 <artifactId>bootique-bom</artifactId>
-                <version>1.0.RC1</version>
+                <version>1.1-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>2.9.5</version>
+                <version>2.10.0.pr1</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jgit</groupId>
