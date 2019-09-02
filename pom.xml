@@ -17,6 +17,7 @@
     <name>Github Tasks Extractor</name>
 
     <properties>
+        <maven.compiler.release>12</maven.compiler.release>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
         <dflib-version>0.7-SNAPSHOT</dflib-version>
     </properties>
@@ -24,7 +25,7 @@
     <repositories>
         <repository>
             <id>snapshots</id>
-            <url>http://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
+            <url>https://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -112,6 +113,10 @@
         <plugins>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
             </plugin>
         </plugins>
     </build>
