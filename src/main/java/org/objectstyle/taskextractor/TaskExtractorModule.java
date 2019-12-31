@@ -1,17 +1,17 @@
 package org.objectstyle.taskextractor;
 
-
-import com.google.inject.Binder;
-import com.google.inject.Injector;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import io.bootique.BQCoreModule;
 import io.bootique.Bootique;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
+import io.bootique.di.Binder;
+import io.bootique.di.Injector;
+import io.bootique.di.Provides;
 import io.bootique.jackson.JacksonService;
 import io.bootique.jersey.client.JerseyClientModule;
 import org.objectstyle.taskextractor.jaxrs.TaskExtractorFeature;
+
+import javax.inject.Singleton;
 
 public class TaskExtractorModule extends ConfigModule {
 

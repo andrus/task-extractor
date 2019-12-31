@@ -1,9 +1,9 @@
 package org.objectstyle.taskextractor.github;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.google.inject.Injector;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
+import io.bootique.di.Injector;
 import io.bootique.jersey.client.HttpClientFactory;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractor;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractorFactory;

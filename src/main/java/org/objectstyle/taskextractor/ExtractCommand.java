@@ -1,8 +1,6 @@
 package org.objectstyle.taskextractor;
 
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.csv.Csv;
 import io.bootique.cli.Cli;
@@ -12,6 +10,8 @@ import io.bootique.log.BootLogger;
 import io.bootique.meta.application.CommandMetadata;
 import io.bootique.meta.application.OptionMetadata;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import java.io.StringWriter;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
