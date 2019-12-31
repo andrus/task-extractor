@@ -24,7 +24,7 @@ public class TaskExtractorModule extends ConfigModule {
         BQCoreModule.extend(binder)
                 .setDefaultCommand(ExtractCommand.class)
                 .setApplicationDescription("Extracts programming activities from various sources.")
-                .declareVar("jerseyclient.auth.github.password", "TE_GITHUB_PASSWORD", "Github password");
+                .declareVar("jerseyclient.auth.github.password", "TE_GITHUB_TOKEN", "Github personal token");
         JerseyClientModule.extend(binder).addFeature(TaskExtractorFeature.class);
     }
 
