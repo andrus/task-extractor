@@ -20,6 +20,7 @@
         <maven.compiler.release>12</maven.compiler.release>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
         <dflib-version>0.7</dflib-version>
+        <bootique.version>2.0-SNAPSHOT</bootique.version>
     </properties>
 
     <repositories>
@@ -52,7 +53,7 @@
             <dependency>
                 <groupId>io.bootique.bom</groupId>
                 <artifactId>bootique-bom</artifactId>
-                <version>2.0-SNAPSHOT</version>
+                <version>${bootique.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
