@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 
@@ -30,9 +31,10 @@ public class CommitsMessageBodyReader implements MessageBodyReader<DataFrame> {
         String author = pc.author != null ? pc.author.login : null;
         String message = pc.commit != null ? pc.commit.message : null;
         ZonedDateTime time = pc.commit != null && pc.commit.author != null ? pc.commit.author.date : null;
+        ZonedDateTime zTime = time != null ? ZonedDateTime.ofInstant(time.toInstant(), ZoneOffset.UTC) : null;
 
         return new Object[]{
-                time,
+                zTime,
                 null,
                 message,
                 author,
