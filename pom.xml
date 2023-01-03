@@ -19,34 +19,10 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
-        <dflib-version>0.15</dflib-version>
+        <dflib.version>0.15</dflib.version>
         <bootique.version>3.0.M1</bootique.version>
+        <jackson.version>2.13.4</jackson.version>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>snapshots</id>
-            <url>https://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <!-- Main artifact repo -->
-        <repository>
-            <id>central</id>
-            <url>https://repo1.maven.org/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -60,19 +36,25 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>2.10.0.pr1</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jgit</groupId>
                 <artifactId>org.eclipse.jgit</artifactId>
-                <version>4.7.0.201704051617-r</version>
+                <version>6.4.0.202211300538-r</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.nhl.dflib</groupId>
                 <artifactId>dflib-bom</artifactId>
                 <type>pom</type>
                 <scope>import</scope>
-                <version>${dflib-version}</version>
+                <version>${dflib.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -81,32 +63,26 @@
         <dependency>
             <groupId>io.bootique.jersey</groupId>
             <artifactId>bootique-jersey-client-instrumented</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.bootique.logback</groupId>
             <artifactId>bootique-logback</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.nhl.dflib</groupId>
             <artifactId>dflib</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.nhl.dflib</groupId>
             <artifactId>dflib-csv</artifactId>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
