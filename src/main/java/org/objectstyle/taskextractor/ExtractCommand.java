@@ -55,7 +55,11 @@ public class ExtractCommand extends CommandWithMetadata {
                 .convertColumn(Commit.MESSAGE.ordinal(), Commit.trimMessage())
                 .sort($col(Commit.TIME.ordinal()).asc())
                 .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> Commit.weekend((ZonedDateTime) o)).as("WEEKEND"))
-                .selectColumns(Commit.TIME.name(), "WEEKEND", Commit.REPO.name(), Commit.MESSAGE.name(), Commit.USER.name(), Commit.HASH.name());
+                .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> ((ZonedDateTime) o).toLocalDate()).as("DATE"))
+                .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> ((ZonedDateTime) o).toLocalTime()).as("TIME_"))
+                .dropColumns("TIME")
+                .renameColumn("TIME_", "TIME")
+                .selectColumns("DATE", "WEEKEND", "TIME", "REPO", "MESSAGE", "USER", "HASH");
 
         StringWriter csv = new StringWriter();
         Csv.saver().save(df, csv);
