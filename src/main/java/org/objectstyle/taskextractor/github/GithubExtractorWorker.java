@@ -79,7 +79,7 @@ class GithubExtractorWorker {
             if (response.getStatus() == 200) {
                 return response
                         .readEntity(DataFrame.class)
-                        .filterRows(Commit.USER.ordinal(), userMatches)
+                        .selectRows(Commit.USER.ordinal(), userMatches)
                         .convertColumn(Commit.REPO.ordinal(), v -> repository);
 
             } else {

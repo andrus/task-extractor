@@ -94,7 +94,7 @@ public class GitExtractor implements RepositoryTaskExtractor {
     private DataFrame readRepo(Git r, RowPredicate prefilter) {
         fetch(r);
         String repoName = r.getRepository().getDirectory().getParentFile().getName();
-        return collectCommits(repoName, allCommits(r)).filterRows(prefilter);
+        return collectCommits(repoName, allCommits(r)).selectRows(prefilter);
     }
 
     private void fetch(Git repo) {
