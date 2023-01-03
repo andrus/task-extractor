@@ -30,4 +30,9 @@ public enum Commit {
     public static ValueMapper<String, String> trimMessage() {
         return m -> m != null ? m.split("\\r?\\n")[0].trim() : null;
     }
+
+    public static String weekend(ZonedDateTime zdt) {
+        int d = zdt.getDayOfWeek().getValue();
+        return d == 6 || d == 7 ? "weekend" : null;
+    }
 }

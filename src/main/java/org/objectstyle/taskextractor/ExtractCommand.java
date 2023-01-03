@@ -14,7 +14,10 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import java.io.StringWriter;
 import java.time.YearMonth;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
+
+import static com.nhl.dflib.Exp.$col;
 
 public class ExtractCommand extends CommandWithMetadata {
 
@@ -50,7 +53,9 @@ public class ExtractCommand extends CommandWithMetadata {
         DataFrame df = extractorProvider.get()
                 .extract(month.atDay(1), month.atEndOfMonth())
                 .convertColumn(Commit.MESSAGE.ordinal(), Commit.trimMessage())
-                .sort(Commit.TIME.ordinal(), true);
+                .sort($col(Commit.TIME.ordinal()).asc())
+                .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> Commit.weekend((ZonedDateTime) o)).as("WEEKEND"))
+                .selectColumns(Commit.TIME.name(), "WEEKEND", Commit.REPO.name(), Commit.MESSAGE.name(), Commit.USER.name(), Commit.HASH.name());
 
         StringWriter csv = new StringWriter();
         Csv.saver().save(df, csv);
