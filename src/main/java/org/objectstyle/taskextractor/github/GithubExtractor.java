@@ -14,9 +14,9 @@ public class GithubExtractor implements RepositoryTaskExtractor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GithubExtractor.class);
 
-    private String user;
-    private List<String> repositories;
-    private WebTarget apiBase;
+    private final String user;
+    private final List<String> repositories;
+    private final WebTarget apiBase;
 
     public GithubExtractor(WebTarget apiBase, String user, List<String> repositories) {
         this.user = user;

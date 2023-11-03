@@ -18,12 +18,12 @@ class GithubExtractorWorker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GithubExtractorWorker.class);
 
-    private LocalDate from;
-    private LocalDate to;
-    private List<String> repositories;
-    private WebTarget apiBase;
-    private ValuePredicate<String> userMatches;
-    private GenericType<Collection<Branch>> branchType;
+    private final LocalDate from;
+    private final LocalDate to;
+    private final List<String> repositories;
+    private final WebTarget apiBase;
+    private final ValuePredicate<String> userMatches;
+    private final GenericType<Collection<Branch>> branchType;
 
 
     public GithubExtractorWorker(
@@ -39,7 +39,7 @@ class GithubExtractorWorker {
         this.apiBase = apiBase;
 
         this.userMatches = user != null ? Commit.userMatches(user) : c -> true;
-        this.branchType = new GenericType<Collection<Branch>>() {
+        this.branchType = new GenericType<>() {
         };
     }
 
@@ -49,7 +49,7 @@ class GithubExtractorWorker {
                 .map(this::extractRepoCommits)
                 // TODO: replace "reduce" with Collector that can batch-concat multiple frames
                 .reduce(DataFrame::vConcat)
-                .orElseGet(() -> DataFrame.newFrame(Commit.index()).empty());
+                .orElseGet(() -> DataFrame.empty(Commit.index()));
     }
 
     private DataFrame extractRepoCommits(String repository) {
@@ -57,7 +57,7 @@ class GithubExtractorWorker {
                 .stream()
                 .map(b -> extractBranchCommits(repository, b))
                 .reduce(DataFrame::vConcat)
-                .orElseGet(() -> DataFrame.newFrame(Commit.index()).empty())
+                .orElseGet(() -> DataFrame.empty(Commit.index()))
                 // dedupe matching commits from multiple branches
                 .group(Commit.HASH.ordinal()).head(1)
                 .toDataFrame();

@@ -22,7 +22,7 @@ public class ExtractCommand extends CommandWithMetadata {
     private static final String MONTH_OPT = "month";
     private static final String OUT_FILE_OPT = "out-file";
 
-    private Provider<TaskExtractor> extractorProvider;
+    private final Provider<TaskExtractor> extractorProvider;
 
     @Inject
     public ExtractCommand(Provider<TaskExtractor> extractorProvider) {
@@ -59,7 +59,7 @@ public class ExtractCommand extends CommandWithMetadata {
                 .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> Commit.weekend((ZonedDateTime) o)).as("WEEKEND"))
                 .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> ((ZonedDateTime) o).toLocalDate()).as("DATE"))
                 .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> ((ZonedDateTime) o).toLocalTime()).as("TIME_"))
-                .dropColumns("TIME")
+                .dropColumn("TIME")
                 .renameColumn("TIME_", "TIME")
                 .selectColumns("DATE", "WEEKEND", "TIME", "REPO", "MESSAGE", "USER", "HASH");
 

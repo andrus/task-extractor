@@ -1,6 +1,7 @@
 package org.objectstyle.taskextractor.git;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Extractor;
 import com.nhl.dflib.JoinType;
 import com.nhl.dflib.RowPredicate;
 import com.nhl.dflib.concat.VConcat;
@@ -26,9 +27,9 @@ public class GitExtractor implements RepositoryTaskExtractor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitExtractor.class);
 
-    private Collection<File> repositories;
-    private boolean fetch;
-    private String user;
+    private final Collection<File> repositories;
+    private final boolean fetch;
+    private final String user;
 
     public GitExtractor(Collection<File> repositories, String user, boolean fetch) {
         this.repositories = repositories;
@@ -50,14 +51,15 @@ public class GitExtractor implements RepositoryTaskExtractor {
 
     public static DataFrame collectCommits(String repoName, Iterable<RevCommit> commits) {
         return DataFrame
-                .newFrame(Commit.index())
-                .objectsToRows(commits, rc -> GitExtractor.toCommit(repoName, rc));
-    }
-
-    private static Object[] toCommit(String repoName, RevCommit rc) {
-        Instant i = Instant.ofEpochSecond(rc.getCommitTime());
-        ZonedDateTime rcTime = ZonedDateTime.ofInstant(i, ZoneOffset.UTC);
-        return new Object[]{rcTime, repoName, rc.getShortMessage(), rc.getAuthorIdent().getName(), rc.getName()};
+                .byRow(
+                        Extractor.$col(rc -> ZonedDateTime.ofInstant(Instant.ofEpochSecond(rc.getCommitTime()), ZoneOffset.UTC)),
+                        Extractor.$col(rc -> repoName),
+                        Extractor.$col(RevCommit::getShortMessage),
+                        Extractor.$col(rc -> rc.getAuthorIdent().getName()),
+                        Extractor.$col(RevCommit::getName)
+                )
+                .columnIndex(Commit.index())
+                .ofIterable(commits);
     }
 
     private static Iterable<RevCommit> allCommits(Git repository) {
@@ -77,7 +79,7 @@ public class GitExtractor implements RepositoryTaskExtractor {
         LOGGER.info("find commits between {} and {}", from, to);
 
         RowPredicate prefilter = RowPredicate
-                .forColumn(Commit.TIME.ordinal(), Commit.timeBetween(from, to))
+                .of(Commit.TIME.ordinal(), Commit.timeBetween(from, to))
                 .and(Commit.USER.ordinal(), Commit.userMatches(user));
 
 
@@ -86,7 +88,7 @@ public class GitExtractor implements RepositoryTaskExtractor {
                 .peek(d -> LOGGER.info("read commits from the local repo {}", d))
                 .map(GitExtractor::repository)
                 .map(r -> readRepo(r, prefilter))
-                .toArray(i -> new DataFrame[i]);
+                .toArray(DataFrame[]::new);
 
         return VConcat.concat(JoinType.left, perRepoCommits);
     }

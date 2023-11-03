@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class TaskExtractor {
 
-    private Collection<RepositoryTaskExtractor> extractors;
+    private final Collection<RepositoryTaskExtractor> extractors;
 
     public TaskExtractor(Collection<RepositoryTaskExtractor> extractors) {
         this.extractors = extractors;
