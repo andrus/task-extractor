@@ -19,7 +19,7 @@
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
-        <dflib.version>0.17</dflib.version>
+        <dflib.version>0.18</dflib.version>
         <bootique.version>3.0.M1</bootique.version>
         <jackson.version>2.13.4</jackson.version>
     </properties>
