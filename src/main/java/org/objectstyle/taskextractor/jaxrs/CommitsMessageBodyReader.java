@@ -2,8 +2,8 @@ package org.objectstyle.taskextractor.jaxrs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Extractor;
+import org.dflib.DataFrame;
+import org.dflib.Extractor;
 import org.objectstyle.taskextractor.Commit;
 
 import javax.ws.rs.WebApplicationException;

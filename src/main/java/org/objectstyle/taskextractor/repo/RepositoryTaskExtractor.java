@@ -1,6 +1,6 @@
 package org.objectstyle.taskextractor.repo;
 
-import com.nhl.dflib.DataFrame;
+import org.dflib.DataFrame;
 
 import java.time.LocalDate;
 

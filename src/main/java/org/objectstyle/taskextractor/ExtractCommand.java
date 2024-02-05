@@ -1,8 +1,8 @@
 package org.objectstyle.taskextractor;
 
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.excel.Excel;
+import org.dflib.DataFrame;
+import org.dflib.excel.Excel;
 import io.bootique.cli.Cli;
 import io.bootique.command.CommandOutcome;
 import io.bootique.command.CommandWithMetadata;
@@ -15,7 +15,8 @@ import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
-import static com.nhl.dflib.Exp.$col;
+import static org.dflib.Exp.$col;
+import static org.dflib.Exp.$str;
 
 public class ExtractCommand extends CommandWithMetadata {
 
@@ -54,14 +55,14 @@ public class ExtractCommand extends CommandWithMetadata {
 
         DataFrame df = extractorProvider.get()
                 .extract(month.atDay(1), month.atEndOfMonth())
-                .convertColumn(Commit.MESSAGE.ordinal(), Commit.trimMessage())
                 .sort($col(Commit.TIME.ordinal()).asc())
-                .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> Commit.weekend((ZonedDateTime) o)).as("WEEKEND"))
-                .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> ((ZonedDateTime) o).toLocalDate()).as("DATE"))
-                .addColumn($col(Commit.TIME.ordinal()).mapVal(o -> ((ZonedDateTime) o).toLocalTime()).as("TIME_"))
-                .dropColumn("TIME")
-                .renameColumn("TIME_", "TIME")
-                .selectColumns("DATE", "WEEKEND", "TIME", "REPO", "MESSAGE", "USER", "HASH");
+                .cols("MESSAGE", "WEEKEND", "DATE", "TIME")
+                .map(
+                        $str(Commit.MESSAGE.ordinal()).mapVal(Commit.trimMessage()),
+                        $col(Commit.TIME.ordinal()).mapVal(o -> Commit.weekend((ZonedDateTime) o)),
+                        $col(Commit.TIME.ordinal()).mapVal(o -> ((ZonedDateTime) o).toLocalDate()),
+                        $col(Commit.TIME.ordinal()).mapVal(o -> ((ZonedDateTime) o).toLocalTime()))
+                .cols("DATE", "WEEKEND", "TIME", "REPO", "MESSAGE", "USER", "HASH").select();
 
         Excel.saver().autoSizeColumns().saveSheet(df, outFile, "Sheet 1");
         return CommandOutcome.succeeded();

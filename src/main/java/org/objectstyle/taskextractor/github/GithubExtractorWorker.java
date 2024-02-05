@@ -1,7 +1,6 @@
 package org.objectstyle.taskextractor.github;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.ValuePredicate;
+import org.dflib.DataFrame;
 import org.objectstyle.taskextractor.Branch;
 import org.objectstyle.taskextractor.Commit;
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 class GithubExtractorWorker {
 
@@ -22,9 +22,8 @@ class GithubExtractorWorker {
     private final LocalDate to;
     private final List<String> repositories;
     private final WebTarget apiBase;
-    private final ValuePredicate<String> userMatches;
+    private final Predicate<String> userMatches;
     private final GenericType<Collection<Branch>> branchType;
-
 
     public GithubExtractorWorker(
             String user,
@@ -77,10 +76,9 @@ class GithubExtractorWorker {
                 .get()) {
 
             if (response.getStatus() == 200) {
-                return response
-                        .readEntity(DataFrame.class)
-                        .selectRows(Commit.USER.ordinal(), userMatches)
-                        .convertColumn(Commit.REPO.ordinal(), v -> repository);
+                return response.readEntity(DataFrame.class)
+                        .rows(r -> userMatches.test(r.get(Commit.USER.ordinal(), String.class))).select()
+                        .cols(Commit.REPO.ordinal()).map(v -> repository);
 
             } else {
                 throw new IllegalStateException("Bad response from Github: " + response.getStatus());
@@ -99,7 +97,7 @@ class GithubExtractorWorker {
             if (response.getStatus() == 200) {
                 return response.readEntity(branchType);
             } else {
-                throw new IllegalStateException("Bad response from Github: " + response.getStatus());
+                throw new IllegalStateException("Bad response from Github: " + response.getStatus() + " " + response.readEntity(String.class));
             }
         }
     }

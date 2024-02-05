@@ -19,10 +19,24 @@
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
-        <dflib.version>0.18</dflib.version>
+        <dflib.version>1.0.0-SNAPSHOT</dflib.version>
         <bootique.version>3.0.M2</bootique.version>
         <jackson.version>2.13.4</jackson.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>bootique-snapshots</id>
+            <name>oss-sonatype-snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -50,7 +64,7 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.nhl.dflib</groupId>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-bom</artifactId>
                 <type>pom</type>
                 <scope>import</scope>
@@ -77,11 +91,11 @@
             <artifactId>org.eclipse.jgit</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.nhl.dflib</groupId>
+            <groupId>org.dflib</groupId>
             <artifactId>dflib</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.nhl.dflib</groupId>
+            <groupId>org.dflib</groupId>
             <artifactId>dflib-excel</artifactId>
         </dependency>
     </dependencies>

@@ -1,10 +1,10 @@
 package org.objectstyle.taskextractor.git;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Extractor;
-import com.nhl.dflib.JoinType;
-import com.nhl.dflib.RowPredicate;
-import com.nhl.dflib.concat.VConcat;
+import org.dflib.DataFrame;
+import org.dflib.Extractor;
+import org.dflib.JoinType;
+import org.dflib.RowPredicate;
+import org.dflib.concat.VConcat;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 public class GitExtractor implements RepositoryTaskExtractor {
 
@@ -78,10 +79,12 @@ public class GitExtractor implements RepositoryTaskExtractor {
 
         LOGGER.info("find commits between {} and {}", from, to);
 
-        RowPredicate prefilter = RowPredicate
-                .of(Commit.TIME.ordinal(), Commit.timeBetween(from, to))
-                .and(Commit.USER.ordinal(), Commit.userMatches(user));
+        Predicate<String> userPredicate = Commit.userMatches(user);
+        Predicate<ZonedDateTime> timePredicate = Commit.timeBetween(from, to);
 
+        RowPredicate prefilter = RowPredicate
+                .of(Commit.TIME.ordinal(), timePredicate::test)
+                .and(Commit.USER.ordinal(), userPredicate::test);
 
         // TODO: parallel extraction... just change to parallel stream
         DataFrame[] perRepoCommits = repositories.stream()
@@ -96,7 +99,7 @@ public class GitExtractor implements RepositoryTaskExtractor {
     private DataFrame readRepo(Git r, RowPredicate prefilter) {
         fetch(r);
         String repoName = r.getRepository().getDirectory().getParentFile().getName();
-        return collectCommits(repoName, allCommits(r)).selectRows(prefilter);
+        return collectCommits(repoName, allCommits(r)).rows(prefilter).select();
     }
 
     private void fetch(Git repo) {

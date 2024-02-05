@@ -1,6 +1,6 @@
 package org.objectstyle.taskextractor.github;
 
-import com.nhl.dflib.DataFrame;
+import org.dflib.DataFrame;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
