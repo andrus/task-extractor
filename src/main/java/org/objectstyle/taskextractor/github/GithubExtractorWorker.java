@@ -1,14 +1,14 @@
 package org.objectstyle.taskextractor.github;
 
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.dflib.DataFrame;
 import org.objectstyle.taskextractor.Branch;
 import org.objectstyle.taskextractor.Commit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;

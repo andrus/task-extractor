@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.bootique.jackson.JacksonService;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
 
 public class TaskExtractorFeature implements Feature {
 

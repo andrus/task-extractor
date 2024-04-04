@@ -2,7 +2,6 @@ package org.objectstyle.taskextractor;
 
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
-import io.bootique.di.Injector;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractor;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractorFactory;
 
@@ -25,10 +24,10 @@ public class TaskExtractorFactory {
         this.extractors = extractors;
     }
 
-    public TaskExtractor createExtractor(Injector injector) {
+    public TaskExtractor createExtractor() {
         List<RepositoryTaskExtractor> extractorList = extractors
                 .stream()
-                .map(e -> e.createExtractor(injector))
+                .map(e -> e.createExtractor())
                 .collect(toList());
         return new TaskExtractor(extractorList);
     }

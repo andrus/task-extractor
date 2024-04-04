@@ -3,12 +3,12 @@ package org.objectstyle.taskextractor.github;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
-import io.bootique.di.Injector;
 import io.bootique.jersey.client.HttpClientFactory;
+import jakarta.ws.rs.client.WebTarget;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractor;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractorFactory;
 
-import javax.ws.rs.client.WebTarget;
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,6 +17,9 @@ import java.util.Objects;
 public class GitHubExtractorFactory implements RepositoryTaskExtractorFactory {
 
     private static final String BASE_URL = "https://api.github.com";
+
+    @Inject
+    private HttpClientFactory httpClientFactory;
 
     private List<String> repositories;
     private String user;
@@ -32,8 +35,8 @@ public class GitHubExtractorFactory implements RepositoryTaskExtractorFactory {
     }
 
     @Override
-    public RepositoryTaskExtractor createExtractor(Injector injector) {
-        WebTarget github = injector.getInstance(HttpClientFactory.class).newBuilder().auth("github").build().target(BASE_URL);
+    public RepositoryTaskExtractor createExtractor() {
+        WebTarget github = httpClientFactory.newBuilder().auth("github").build().target(BASE_URL);
         return new GithubExtractor(github, Objects.requireNonNull(user), repositories);
     }
 }

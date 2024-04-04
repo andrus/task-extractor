@@ -2,12 +2,12 @@ package org.objectstyle.taskextractor.jaxrs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.MessageBodyReader;
 import org.objectstyle.taskextractor.Branch;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -18,7 +18,7 @@ import java.util.Collection;
 
 public class BranchesMessageBodyReader implements MessageBodyReader<Collection<Branch>> {
 
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     public BranchesMessageBodyReader(ObjectMapper mapper) {
         this.mapper = mapper;

@@ -20,8 +20,8 @@
         <maven.compiler.release>21</maven.compiler.release>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
         <dflib.version>1.0.0-SNAPSHOT</dflib.version>
-        <bootique.version>3.0.M2</bootique.version>
-        <jackson.version>2.13.4</jackson.version>
+        <bootique.version>3.0-SNAPSHOT</bootique.version>
+        <jackson.version>2.14.3</jackson.version>
     </properties>
 
     <repositories>
@@ -76,7 +76,7 @@
     <dependencies>
         <dependency>
             <groupId>io.bootique.jersey</groupId>
-            <artifactId>bootique-jersey-client-instrumented</artifactId>
+            <artifactId>bootique-jersey-jakarta-client-instrumented</artifactId>
         </dependency>
         <dependency>
             <groupId>io.bootique.logback</groupId>

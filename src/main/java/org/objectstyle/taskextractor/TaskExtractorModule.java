@@ -1,8 +1,9 @@
 package org.objectstyle.taskextractor;
 
 import io.bootique.BQCoreModule;
+import io.bootique.BQModule;
 import io.bootique.Bootique;
-import io.bootique.ConfigModule;
+import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Injector;
@@ -13,10 +14,21 @@ import org.objectstyle.taskextractor.jaxrs.TaskExtractorFeature;
 
 import javax.inject.Singleton;
 
-public class TaskExtractorModule extends ConfigModule {
+public class TaskExtractorModule implements BQModule {
+
+    private static final String CONFIG_PREFIX = "taskextractor";
 
     public static void main(String[] args) {
         Bootique.app(args).autoLoadModules().exec().exit();
+    }
+
+    @Override
+    public ModuleCrate crate() {
+        return ModuleCrate.of(this)
+                .description("Provides command to extract coding activity from various repositories. " +
+                        "Assists in tracking and such.")
+                .config(CONFIG_PREFIX, TaskExtractorFactory.class)
+                .build();
     }
 
     @Override
@@ -31,7 +43,7 @@ public class TaskExtractorModule extends ConfigModule {
     @Singleton
     @Provides
     private TaskExtractor provideExtractor(ConfigurationFactory configurationFactory, Injector injector) {
-        return configurationFactory.config(TaskExtractorFactory.class, configPrefix).createExtractor(injector);
+        return configurationFactory.config(TaskExtractorFactory.class, CONFIG_PREFIX).createExtractor();
     }
 
     @Singleton

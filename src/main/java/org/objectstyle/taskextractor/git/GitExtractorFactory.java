@@ -3,7 +3,6 @@ package org.objectstyle.taskextractor.git;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
-import io.bootique.di.Injector;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractor;
 import org.objectstyle.taskextractor.repo.RepositoryTaskExtractorFactory;
 import org.slf4j.Logger;
@@ -26,7 +25,7 @@ public class GitExtractorFactory implements RepositoryTaskExtractorFactory {
     private String user;
 
     @Override
-    public RepositoryTaskExtractor createExtractor(Injector injector) {
+    public RepositoryTaskExtractor createExtractor() {
 
         List<File> validRepos = getRepositories().stream()
                 .filter(GitExtractorFactory::validRepoDirectory)
