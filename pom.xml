@@ -21,7 +21,7 @@
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
         <dflib.version>1.0.0-SNAPSHOT</dflib.version>
         <bootique.version>3.0-SNAPSHOT</bootique.version>
-        <jackson.version>2.14.3</jackson.version>
+        <jackson.version>2.15.4</jackson.version>
     </properties>
 
     <repositories>
