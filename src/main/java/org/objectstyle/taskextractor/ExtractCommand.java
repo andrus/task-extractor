@@ -28,8 +28,9 @@ public class ExtractCommand extends CommandWithMetadata {
     @Inject
     public ExtractCommand(Provider<TaskExtractor> extractorProvider) {
         super(CommandMetadata.builder(ExtractCommand.class)
-                .addOption(OptionMetadata.builder(MONTH_OPT, "Report month.").valueRequired("YYYY-MM"))
-                .addOption(OptionMetadata.builder(OUT_FILE_OPT, "Output Excel file").valueRequired()));
+                .addOption(OptionMetadata.builder(MONTH_OPT, "Report month.").valueRequired("YYYY-MM").build())
+                .addOption(OptionMetadata.builder(OUT_FILE_OPT, "Output Excel file").valueRequired().build())
+                .build());
         this.extractorProvider = extractorProvider;
     }
 
@@ -57,7 +58,7 @@ public class ExtractCommand extends CommandWithMetadata {
                 .extract(month.atDay(1), month.atEndOfMonth())
                 .sort($col(Commit.TIME.ordinal()).asc())
                 .cols("MESSAGE", "WEEKEND", "DATE", "TIME")
-                .map(
+                .merge(
                         $str(Commit.MESSAGE.ordinal()).mapVal(Commit.trimMessage()),
                         $col(Commit.TIME.ordinal()).mapVal(o -> Commit.weekend((ZonedDateTime) o)),
                         $col(Commit.TIME.ordinal()).mapVal(o -> ((ZonedDateTime) o).toLocalDate()),

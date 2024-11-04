@@ -59,7 +59,7 @@ class GithubExtractorWorker {
                 .orElseGet(() -> DataFrame.empty(Commit.index()))
                 // dedupe matching commits from multiple branches
                 .group(Commit.HASH.ordinal()).head(1)
-                .toDataFrame();
+                .select();
     }
 
     private DataFrame extractBranchCommits(String repository, Branch branch) {
@@ -78,7 +78,7 @@ class GithubExtractorWorker {
             if (response.getStatus() == 200) {
                 return response.readEntity(DataFrame.class)
                         .rows(r -> userMatches.test(r.get(Commit.USER.ordinal(), String.class))).select()
-                        .cols(Commit.REPO.ordinal()).map(v -> repository);
+                        .cols(Commit.REPO.ordinal()).merge(v -> repository);
 
             } else {
                 throw new IllegalStateException("Bad response from Github: " + response.getStatus());
