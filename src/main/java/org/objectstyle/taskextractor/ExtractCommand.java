@@ -1,16 +1,19 @@
 package org.objectstyle.taskextractor;
 
 
-import org.dflib.DataFrame;
-import org.dflib.excel.Excel;
+import io.bootique.BootiqueException;
 import io.bootique.cli.Cli;
 import io.bootique.command.CommandOutcome;
 import io.bootique.command.CommandWithMetadata;
 import io.bootique.meta.application.CommandMetadata;
 import io.bootique.meta.application.OptionMetadata;
+import org.dflib.DataFrame;
+import org.dflib.excel.Excel;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.time.LocalDate;
+import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
@@ -20,6 +23,7 @@ import static org.dflib.Exp.$str;
 
 public class ExtractCommand extends CommandWithMetadata {
 
+    private static final String YEAR_OPT = "year";
     private static final String MONTH_OPT = "month";
     private static final String OUT_FILE_OPT = "out-file";
 
@@ -28,7 +32,8 @@ public class ExtractCommand extends CommandWithMetadata {
     @Inject
     public ExtractCommand(Provider<TaskExtractor> extractorProvider) {
         super(CommandMetadata.builder(ExtractCommand.class)
-                .addOption(OptionMetadata.builder(MONTH_OPT, "Report month.").valueRequired("YYYY-MM").build())
+                .addOption(OptionMetadata.builder(YEAR_OPT, "Report year. Should not be used together with '--month'").valueRequired("YYYY").build())
+                .addOption(OptionMetadata.builder(MONTH_OPT, "Report month. If not set, the '--year' option is used, and if the year is also not specified, the last calendar month is used").valueRequired("YYYY-MM").build())
                 .addOption(OptionMetadata.builder(OUT_FILE_OPT, "Output Excel file").valueRequired().build())
                 .build());
         this.extractorProvider = extractorProvider;
@@ -37,25 +42,14 @@ public class ExtractCommand extends CommandWithMetadata {
     @Override
     public CommandOutcome run(Cli cli) {
 
-        String monthString = cli.optionString(MONTH_OPT);
-        if (monthString == null) {
-            return CommandOutcome.failed(-1, "Month is not specified. Use -m / --month option.");
-        }
-
+        LocalDate[] dateRange = extractionRange(cli);
         String outFile = cli.optionString(OUT_FILE_OPT);
         if (outFile == null) {
             return CommandOutcome.failed(-1, "Output Excel file is not specified. Use -o / --out-file option.");
         }
 
-        YearMonth month;
-        try {
-            month = YearMonth.parse(monthString);
-        } catch (DateTimeParseException e) {
-            return CommandOutcome.failed(-1, "Invalid month argument format: " + monthString + ". Must be YYYY-mm.");
-        }
-
         DataFrame df = extractorProvider.get()
-                .extract(month.atDay(1), month.atEndOfMonth())
+                .extract(dateRange[0], dateRange[1])
                 .sort($col(Commit.TIME.ordinal()).asc())
                 .cols("MESSAGE", "WEEKEND", "DATE", "TIME")
                 .merge(
@@ -67,5 +61,39 @@ public class ExtractCommand extends CommandWithMetadata {
 
         Excel.saver().autoSizeColumns().saveSheet(df, outFile, "Sheet 1");
         return CommandOutcome.succeeded();
+    }
+
+    private LocalDate[] extractionRange(Cli cli) {
+        String yearString = cli.optionString(YEAR_OPT);
+        String monthString = cli.optionString(MONTH_OPT);
+
+        if (yearString != null && monthString != null) {
+            throw new BootiqueException(-1, "Both --year and --month are specified. Pick only one time option");
+        }
+
+        if (yearString != null) {
+            Year year;
+            try {
+                year = Year.parse(yearString);
+            } catch (DateTimeParseException e) {
+                throw new BootiqueException(-1, "Invalid year argument format: " + yearString + ". Must be YYYY.");
+            }
+
+            return new LocalDate[]{year.atDay(1), year.atMonth(12).atEndOfMonth()};
+        }
+
+        if (monthString != null) {
+            YearMonth month;
+            try {
+                month = YearMonth.parse(monthString);
+            } catch (DateTimeParseException e) {
+                throw new BootiqueException(-1, "Invalid month argument format: " + monthString + ". Must be YYYY-mm.");
+            }
+
+            return new LocalDate[]{month.atDay(1), month.atEndOfMonth()};
+        }
+
+        YearMonth lastMonth = YearMonth.now().minusMonths(1);
+        return new LocalDate[]{lastMonth.atDay(1), lastMonth.atEndOfMonth()};
     }
 }
