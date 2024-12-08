@@ -23,8 +23,10 @@ import static org.dflib.Exp.$str;
 
 public class ExtractCommand extends CommandWithMetadata {
 
-    private static final String YEAR_OPT = "year";
+    private static final String MONTHS_OPT = "months";
     private static final String MONTH_OPT = "month";
+    private static final String YEAR_OPT = "year";
+
     private static final String OUT_FILE_OPT = "out-file";
 
     private final Provider<TaskExtractor> extractorProvider;
@@ -32,8 +34,9 @@ public class ExtractCommand extends CommandWithMetadata {
     @Inject
     public ExtractCommand(Provider<TaskExtractor> extractorProvider) {
         super(CommandMetadata.builder(ExtractCommand.class)
-                .addOption(OptionMetadata.builder(YEAR_OPT, "Report year. Should not be used together with '--month'").valueRequired("YYYY").build())
-                .addOption(OptionMetadata.builder(MONTH_OPT, "Report month. If not set, the '--year' option is used, and if the year is also not specified, the last calendar month is used").valueRequired("YYYY-MM").build())
+                .addOption(OptionMetadata.builder(YEAR_OPT, "Report year.").valueRequired("YYYY").build())
+                .addOption(OptionMetadata.builder(MONTH_OPT, "Report month.").valueRequired("YYYY-MM").build())
+                .addOption(OptionMetadata.builder(MONTHS_OPT, "How many months starting from this month to include in the report").valueRequired("nnn").build())
                 .addOption(OptionMetadata.builder(OUT_FILE_OPT, "Output Excel file").valueRequired().build())
                 .build());
         this.extractorProvider = extractorProvider;
@@ -64,36 +67,59 @@ public class ExtractCommand extends CommandWithMetadata {
     }
 
     private LocalDate[] extractionRange(Cli cli) {
-        String yearString = cli.optionString(YEAR_OPT);
-        String monthString = cli.optionString(MONTH_OPT);
 
-        if (yearString != null && monthString != null) {
-            throw new BootiqueException(-1, "Both --year and --month are specified. Pick only one time option");
+        String[] opts = new String[]{
+                cli.optionString(YEAR_OPT),
+                cli.optionString(MONTH_OPT),
+                cli.optionString(MONTHS_OPT)
+        };
+
+        int cardinality = 0;
+        for (int i = 0; i < opts.length; i++) {
+            if (opts[i] != null) {
+                cardinality++;
+            }
         }
 
-        if (yearString != null) {
+        if (cardinality == 0) {
+            YearMonth lastMonth = YearMonth.now().minusMonths(1);
+            return new LocalDate[]{lastMonth.atDay(1), lastMonth.atEndOfMonth()};
+        }
+
+        if (cardinality > 1) {
+            throw new BootiqueException(-1, "Only one of '--year', '--month' and '--months' can be specified.");
+        }
+
+        if (opts[0] != null) {
             Year year;
             try {
-                year = Year.parse(yearString);
+                year = Year.parse(opts[0]);
             } catch (DateTimeParseException e) {
-                throw new BootiqueException(-1, "Invalid year argument format: " + yearString + ". Must be YYYY.");
+                throw new BootiqueException(-1, "Invalid year argument format: " + opts[0] + ". Must be YYYY.");
             }
 
             return new LocalDate[]{year.atDay(1), year.atMonth(12).atEndOfMonth()};
         }
 
-        if (monthString != null) {
+        if (opts[1] != null) {
             YearMonth month;
             try {
-                month = YearMonth.parse(monthString);
+                month = YearMonth.parse(opts[1]);
             } catch (DateTimeParseException e) {
-                throw new BootiqueException(-1, "Invalid month argument format: " + monthString + ". Must be YYYY-mm.");
+                throw new BootiqueException(-1, "Invalid month argument format: " + opts[1] + ". Must be YYYY-mm.");
             }
 
             return new LocalDate[]{month.atDay(1), month.atEndOfMonth()};
         }
 
-        YearMonth lastMonth = YearMonth.now().minusMonths(1);
-        return new LocalDate[]{lastMonth.atDay(1), lastMonth.atEndOfMonth()};
+        int months;
+        try {
+            months = Integer.parseInt(opts[2]);
+        } catch (DateTimeParseException e) {
+            throw new BootiqueException(-1, "Invalid months argument format: " + opts[2] + ". Must be nnn");
+        }
+
+        LocalDate now = LocalDate.now();
+        return new LocalDate[]{now.minusMonths(months), now};
     }
 }

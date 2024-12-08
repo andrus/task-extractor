@@ -35,7 +35,7 @@ public class TaskExtractorModule implements BQModule {
     public void configure(Binder binder) {
         BQCoreModule.extend(binder)
                 .setDefaultCommand(ExtractCommand.class)
-                .setApplicationDescription("Extracts programming activities from various sources.")
+                .setApplicationDescription("Extracts programming activities from various sources. Extraction period is set explicitly via '--month', '--year', '--months' options. If none of those are present, the default is the previous month")
                 .declareVar("jerseyclient.auth.github.password", "TE_GITHUB_TOKEN", "Github personal token");
         JerseyClientModule.extend(binder).addFeature(TaskExtractorFeature.class);
     }

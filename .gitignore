@@ -2,4 +2,4 @@
 .idea
 target
 dependency-reduced-pom.xml
-andrus.yml
+andrus*.yml
