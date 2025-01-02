@@ -112,14 +112,18 @@ public class ExtractCommand extends CommandWithMetadata {
             return new LocalDate[]{month.atDay(1), month.atEndOfMonth()};
         }
 
-        int months;
-        try {
-            months = Integer.parseInt(opts[2]);
-        } catch (DateTimeParseException e) {
-            throw new BootiqueException(-1, "Invalid months argument format: " + opts[2] + ". Must be nnn");
+        if (opts[2] != null) {
+            int months;
+            try {
+                months = Integer.parseInt(opts[2]);
+            } catch (NumberFormatException e) {
+                throw new BootiqueException(-1, "Invalid months argument format: " + opts[2] + ". Must be nnn");
+            }
+
+            LocalDate now = LocalDate.now();
+            return new LocalDate[]{now.minusMonths(months), now};
         }
 
-        LocalDate now = LocalDate.now();
-        return new LocalDate[]{now.minusMonths(months), now};
+        throw new BootiqueException(-1, "No date range was specified");
     }
 }
