@@ -93,7 +93,9 @@ public class GitExtractor implements RepositoryTaskExtractor {
                 .map(r -> readRepo(r, prefilter))
                 .toArray(DataFrame[]::new);
 
-        return VConcat.concat(JoinType.left, perRepoCommits);
+        return perRepoCommits.length > 0
+                ? VConcat.concat(JoinType.left, perRepoCommits)
+                : DataFrame.empty(Commit.index());
     }
 
     private DataFrame readRepo(Git r, RowPredicate prefilter) {
