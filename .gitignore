@@ -3,3 +3,4 @@
 target
 dependency-reduced-pom.xml
 andrus*.yml
+.DS_Store
