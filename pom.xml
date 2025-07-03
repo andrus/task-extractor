@@ -14,23 +14,9 @@
         <maven.compiler.release>21</maven.compiler.release>
         <main.class>org.objectstyle.taskextractor.TaskExtractorModule</main.class>
         <dflib.version>2.0.0-SNAPSHOT</dflib.version>
-        <bootique.version>3.0-M6</bootique.version>
+        <bootique.version>3.0-RC1</bootique.version>
         <jackson.version>2.15.4</jackson.version>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>s01-oss-sonatype-snapshots</id>
-            <name>s01-oss-sonatype-snapshots</name>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <dependencyManagement>
         <dependencies>
